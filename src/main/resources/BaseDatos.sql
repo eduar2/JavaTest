@@ -25,7 +25,7 @@ create table ACCOUNT(
   ID                int not null AUTO_INCREMENT primary key,
   ACCOUNT_NUMBER    INT not null,
   TYPE              varchar(100) not null,
-  INITIAL_BALANCE   INT NOT NULL,
+  INITIAL_BALANCE   decimal(8,2) NOT NULL,
   STATUS BOOL       NOT null,
   CLIENT_ID         INT not null,
   foreign key (CLIENT_ID) references CLIENT(ID)
@@ -33,11 +33,12 @@ create table ACCOUNT(
 
 create table TRANSACTIONS(
   ID                int not null AUTO_INCREMENT primary key,
+  TRANSACTION_DATE  DATE NOT NULL,
   ACCOUNT_NUMBER    INT not null,
   TYPE              varchar(100) not null,
   INITIAL_BALANCE   INT NOT NULL,
   AMOUNT            INT not null,
-  AVAILABLE_BALANCE INT NOT NULL,
+  FINAL_BALANCE INT NOT NULL,
   STATUS BOOL       NOT null,
   ACCOUNT_ID        INT NOT NULL,
   foreign key (ACCOUNT_ID) references ACCOUNT(ID)

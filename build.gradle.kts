@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.1.4"
 	id("io.spring.dependency-management") version "1.1.3"
+	kotlin("plugin.lombok") version "1.8.10"
 }
 
 group = "com.pichincha.prueba"
@@ -17,7 +18,11 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("com.h2database:h2:2.2.224")
+	implementation("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	annotationProcessor("org.projectlombok:lombok")
 }
 
 tasks.withType<Test> {
