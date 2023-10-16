@@ -22,6 +22,7 @@ public class TransactionsDTO {
     private BigDecimal initialBalance;
     private BigDecimal amount;
     private BigDecimal finalBalance;
+    private AccountDTO accountDTO;
 
     private Boolean status;
 
