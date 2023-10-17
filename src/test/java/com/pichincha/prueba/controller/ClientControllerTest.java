@@ -63,14 +63,83 @@ class ClientControllerTest {
     }
 
     @Test
-    void postClient() {
+    void postClient() throws Exception {
+        ClientDTO client = new ClientDTO();
+        client.setPassword("123");
+        client.setStatus(true);
+        client.setName("Tester");
+        client.setGender("Male");
+        client.setAddress("Cuenca");
+        client.setAge(30);
+        client.setIdentification("17...");
+        client.setPhone("911");
+
+        GenericResponse expectedResponse = new GenericResponse();
+        expectedResponse.setStatus(HttpStatus.OK.value());
+        expectedResponse.setMessage("Cliente creado correctamente");
+
+        String json = jsonRequestClient.write(client).getJson();
+        MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.post("/clientes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andReturn().getResponse();
+
+        BDDMockito.then(response.getStatus()).equals(HttpStatus.OK.value());
     }
 
     @Test
-    void putClient() {
+    void putClient() throws Exception {
+        ClientDTO client = new ClientDTO();
+        client.setPassword("123");
+        client.setStatus(true);
+        client.setName("Tester");
+        client.setGender("Male");
+        client.setAddress("Cuenca");
+        client.setAge(30);
+        client.setIdentification("17...");
+        client.setPhone("911");
+
+        String json = jsonRequestClient.write(client).getJson();
+        MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.post("/clientes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andReturn().getResponse();
+
+        client.setName("Tester");
+
+        GenericResponse expectedResponse = new GenericResponse();
+        expectedResponse.setStatus(HttpStatus.OK.value());
+        expectedResponse.setMessage("Cliente actualizado correctamente");
+
+        json = jsonRequestClient.write(client).getJson();
+        MockHttpServletResponse responsePut = mvc.perform(MockMvcRequestBuilders.put("/clientes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andReturn().getResponse();
+        BDDMockito.then(responsePut.getStatus()).equals(HttpStatus.OK.value());
     }
 
     @Test
-    void deleteClient() {
+    void deleteClient() throws Exception {
+        ClientDTO client = new ClientDTO();
+        client.setPassword("123");
+        client.setStatus(true);
+        client.setName("Tester");
+        client.setGender("Male");
+        client.setAddress("Cuenca");
+        client.setAge(30);
+        client.setIdentification("17...");
+        client.setPhone("911");
+
+        String json = jsonRequestClient.write(client).getJson();
+        MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.post("/clientes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andReturn().getResponse();
+        MockHttpServletResponse responseDelete = mvc.perform(MockMvcRequestBuilders.delete("/clientes/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andReturn().getResponse();
+        BDDMockito.then(responseDelete.getStatus()).equals(HttpStatus.OK.value());
     }
 }
