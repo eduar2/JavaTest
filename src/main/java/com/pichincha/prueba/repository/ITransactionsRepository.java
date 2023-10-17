@@ -25,11 +25,10 @@ public interface ITransactionsRepository extends CrudRepository<Transactions,Int
             + "where tran.account.id = act.id "
             + "and act.client.id = c.id "
             + "and tran.transactionDate = ?1 "
-            + "and c.id = ?2 "
-            + "and act.id = ?3 "
-            + "and tran.type = ?4"
+            + "and act.id = ?2 "
+            + "and tran.type = ?3"
     )
-    BigDecimal getDailyTotal(Date date, Integer clientId, Integer accountId, String transactionType);
+    BigDecimal getDailyTotal(Date date, Integer accountId, String transactionType);
 
     @Query("select tran.finalBalance "
             + "from Transactions tran, Account act, Client c "

@@ -2,11 +2,13 @@ package com.pichincha.prueba.service;
 
 import com.pichincha.prueba.exception.SystemException;
 import com.pichincha.prueba.model.Account;
+import com.pichincha.prueba.model.Client;
 import com.pichincha.prueba.model.Transactions;
 import com.pichincha.prueba.model.dto.AccountDTO;
-import com.pichincha.prueba.model.dto.ClientDTO;
+import com.pichincha.prueba.model.dto.ReportDTO;
 import com.pichincha.prueba.model.dto.TransactionsDTO;
 import com.pichincha.prueba.repository.IAccountRepository;
+import com.pichincha.prueba.repository.IClientRepository;
 import com.pichincha.prueba.repository.ITransactionsRepository;
 import com.pichincha.prueba.service.interfaces.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,52 +32,58 @@ public class TransactionService implements ITransactionService {
 
     @Autowired
     private IAccountRepository accountRepository;
+
+    @Autowired
+    private IClientRepository clientRepository;
+
     @Override
     public TransactionsDTO create(TransactionsDTO dto) throws SystemException {
-        Account act = accountRepository.findById(dto.getAccountDTO().getAccountId()).get();
-        BigDecimal balance = act.getInitialBalance();
+        AccountDTO actDTO = dto.getAccountDTO();
+        Integer id = actDTO.getAccountId();
+        Account act = accountRepository.findById(id).get();
+        BigDecimal balance = act.getCurrentBalance();
+        dto.setInitialBalance(balance);
+        BigDecimal newBalance;
 
-        List<BigDecimal> balances  = transactionsRepository.getBalances(act.getClient().getId(), act.getId());
-        if(balances != null && !balances.isEmpty()){
-            balance = balances.get(0);
-        }
+        if ("deposito".equalsIgnoreCase(dto.getType())) {
+            dto.setInitialBalance(balance);
+            newBalance = BigDecimal.valueOf(balance.doubleValue() + dto.getAmount().doubleValue());
+            dto.setFinalBalance(newBalance);
+            act.setCurrentBalance(newBalance);
+        } else {
+            if (balance.doubleValue() <= 0 || dto.getAmount().doubleValue() > balance.doubleValue()) {
+                throw new SystemException("Saldo no disponible");
+            } else {
+                java.util.Date today = Calendar.getInstance().getTime();
+                Date date = new Date(today.getTime());
 
-        if("deposito".equalsIgnoreCase(dto.getType())){
-            balance = balance.add(dto.getAmount());
-        }else{
-            java.util.Date today = Calendar.getInstance().getTime();
-            Date date = new Date(today.getTime());
+                BigDecimal dailyTotal = transactionsRepository.getDailyTotal(date, act.getId(), "retiro");
+                if (dailyTotal == null) {
+                    dailyTotal = new BigDecimal(0);
+                }
+                BigDecimal currentDaily = new BigDecimal(0);
+                currentDaily = currentDaily.add(dailyTotal).add(dto.getAmount());
 
-            BigDecimal dailyTotal = transactionsRepository.getDailyTotal(date, act.getClient().getId(), act.getId(), "retiro");
-            if(dailyTotal==null){
-                dailyTotal = new BigDecimal(0);
+                if (currentDaily.doubleValue() > DAILY_QUOTE.doubleValue()) {
+                    throw new SystemException("Cupo diario Excedido");
+                } else {
+                    newBalance = BigDecimal.valueOf(balance.doubleValue() - dto.getAmount().doubleValue());
+                    dto.setFinalBalance(newBalance);
+                    act.setCurrentBalance(newBalance);
+                }
             }
-            BigDecimal estimate = new BigDecimal(0);
-            estimate = estimate.add(dailyTotal).add(dto.getAmount()).add(DAILY_QUOTE);
-
-            if(estimate!=null && estimate.doubleValue() < 0){
-                throw new SystemException("Cupo diario Excedido");
-            }else{
-                balance = balance.add(dto.getAmount());
-            }
         }
-
-        if(balance.doubleValue() < 0){
-            throw new SystemException("Saldo no disponible");
-        }else{
-            dto.setFinalBalance(balance);
-        }
-
+        accountRepository.save(act);
         Transactions tran = dto.parse(dto);
+
         tran.setAccount(act);
         transactionsRepository.save(tran);
-
         dto.setId(tran.getId());
         return dto;
     }
 
     @Override
-    public Iterable<TransactionsDTO> read()  {
+    public Iterable<TransactionsDTO> read() {
         List<TransactionsDTO> allTrans = new ArrayList<>();
         Iterable<Transactions> trans = transactionsRepository.findAll();
         trans.forEach(tran -> {
@@ -91,29 +99,29 @@ public class TransactionService implements ITransactionService {
         Account act = accountRepository.findById(dto.getAccountDTO().getAccountId()).get();
         BigDecimal balance = act.getInitialBalance();
 
-        if("deposito".equalsIgnoreCase(dto.getType())){
+        if ("deposito".equalsIgnoreCase(dto.getType())) {
             balance = balance.add(dto.getAmount());
-        }else{
+        } else {
             java.util.Date today = Calendar.getInstance().getTime();
             Date date = new Date(today.getTime());
 
-            BigDecimal dailyTotal = transactionsRepository.getDailyTotal(date, act.getClient().getId(), act.getId(), "retiro");
-            if(dailyTotal==null){
+            BigDecimal dailyTotal = transactionsRepository.getDailyTotal(date, act.getId(), "retiro");
+            if (dailyTotal == null) {
                 dailyTotal = new BigDecimal(0);
             }
             BigDecimal estimate = new BigDecimal(0);
             estimate = estimate.add(dailyTotal).add(dto.getAmount()).add(DAILY_QUOTE);
 
-            if(estimate!=null && estimate.doubleValue() < 0){
+            if (estimate != null && estimate.doubleValue() < 0) {
                 throw new SystemException("Cupo diario Excedido");
-            }else{
+            } else {
                 balance = balance.add(dto.getAmount());
             }
         }
 
-        if(balance.doubleValue() < 0){
+        if (balance.doubleValue() < 0) {
             throw new SystemException("Saldo no disponible");
-        }else{
+        } else {
             dto.setFinalBalance(balance);
         }
 
@@ -129,20 +137,25 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public Iterable<TransactionsDTO> getTransactions(Date initialDate, Date finalDate, Integer clientId) {
-        List<TransactionsDTO> transacts = new ArrayList<>();
+    public Iterable<ReportDTO> getTransactions(Date initialDate, Date finalDate, Integer clientId) {
+        List<ReportDTO> transacts = new ArrayList<>();
         Iterable<Transactions> result = transactionsRepository.getTransactions(initialDate, finalDate, clientId);
-        result.forEach(tran -> {
-            TransactionsDTO dto = new TransactionsDTO();
-            dto.parse(tran);
+        result.forEach((Transactions tran) -> {
+            ReportDTO report = new ReportDTO();
             Account act = accountRepository.findById(tran.getAccount().getId()).get();
-            AccountDTO actDTO = new AccountDTO();
-            actDTO.parse(act);
-            ClientDTO cliDTO = new ClientDTO();
-            cliDTO.parse(actDTO.getClientDTO());
-            actDTO.setClientDTO(cliDTO);
-            dto.setAccountDTO(actDTO);
-            transacts.add(dto);
+            Client cli =  clientRepository.findById(act.getClient().getId()).get();
+            report.setFecha(tran.getTransactionDate());
+            report.setCliente(cli.getName());
+            report.setNumeroCuenta(act.getAccountNumber());
+            report.setTipo(act.getType());
+            report.setSaldoInicial(tran.getInitialBalance());
+            report.setEstado(tran.getStatus());
+            BigDecimal factor = new BigDecimal(-1);
+            BigDecimal amount = tran.getType().equals("deposito")? tran.getAmount() : tran.getAmount().multiply(factor);
+            report.setMovimiento(amount);
+            report.setSaldoDisponible(tran.getFinalBalance());
+
+            transacts.add(report);
         });
         return transacts;
     }

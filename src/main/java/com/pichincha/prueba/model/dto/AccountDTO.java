@@ -65,6 +65,7 @@ public class AccountDTO {
 
     private String type;
     private BigDecimal initialBalance;
+    private BigDecimal currentBalance;
     private Boolean status;
     private ClientDTO clientDTO;
 
@@ -73,6 +74,7 @@ public class AccountDTO {
         this.setNumber(account.getAccountNumber());
         this.setType(account.getType());
         this.setInitialBalance(account.getInitialBalance());
+        this.setCurrentBalance(account.getCurrentBalance());
         this.setStatus(account.getStatus());
     }
 
@@ -85,6 +87,7 @@ public class AccountDTO {
         account.setAccountNumber(dto.getNumber());
         account.setType(dto.getType());
         account.setInitialBalance(dto.getInitialBalance());
+        account.setCurrentBalance(dto.getInitialBalance());
         return account;
     }
 }

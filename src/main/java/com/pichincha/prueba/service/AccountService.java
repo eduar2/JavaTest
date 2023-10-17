@@ -41,6 +41,7 @@ public class AccountService implements IAccountService {
     @Override
     public AccountDTO create(AccountDTO dto) {
         Account act = dto.parse(dto);
+        act.setCurrentBalance(dto.getInitialBalance());
         Client cli = clientRepository.findById(dto.getClientDTO().getClientId()).get();
         act.setClient(cli);
         accountRepository.save(act);

@@ -32,6 +32,9 @@ public class TransactionsDTO {
         this.type = transact.getType();
         this.amount = transact.getAmount();
         this.finalBalance = transact.getFinalBalance();
+        this.initialBalance = transact.getInitialBalance();
+        this.status = transact.getStatus();
+
     }
 
     public Transactions parse(TransactionsDTO dto){
@@ -50,9 +53,12 @@ public class TransactionsDTO {
             transact.setId(dto.getId());
         }
         transact.setTransactionDate(f);
+        transact.setInitialBalance(dto.getInitialBalance());
+        transact.setStatus(dto.getStatus());
         transact.setType(dto.getType());
         transact.setAmount(dto.getAmount());
         transact.setFinalBalance(dto.getFinalBalance());
+
         return transact;
     }
 }

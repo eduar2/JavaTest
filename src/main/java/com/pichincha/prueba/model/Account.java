@@ -68,9 +68,10 @@ public class Account implements Serializable {
     private String type;
 
     private BigDecimal initialBalance;
+    private BigDecimal currentBalance;
     private Boolean status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "clientId")
     private Client client;
 }
