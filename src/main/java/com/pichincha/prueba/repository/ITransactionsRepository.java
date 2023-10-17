@@ -12,32 +12,32 @@ public interface ITransactionsRepository extends CrudRepository<Transactions,Int
 
     @Query("select tran "
             + "from Transactions tran, Account act, Client c "
-            + "where tran.account.accountId = act.AccountId "
+            + "where tran.account.id = act.id "
             + "and act.client.id = c.id "
-            + "and tran.date >= ?1 "
-            + "and tran.date <= ?2 "
+            + "and tran.transactionDate >= ?1 "
+            + "and tran.transactionDate <= ?2 "
             + "and c.id = ?3"
     )
     Iterable<Transactions> getTransactions(Date initialDate, Date fialDate, Integer clientId);
 
-    @Query("select sum(tran.valor) "
+    @Query("select sum(tran.amount) "
             + "from Transactions tran, Account act, Client c "
-            + "where tran.account.accountId = act.accountId "
+            + "where tran.account.id = act.id "
             + "and act.client.id = c.id "
-            + "and tran.date = ?1 "
+            + "and tran.transactionDate = ?1 "
             + "and c.id = ?2 "
-            + "and act.accountId = ?3 "
+            + "and act.id = ?3 "
             + "and tran.type = ?4"
     )
     BigDecimal getDailyTotal(Date date, Integer clientId, Integer accountId, String transactionType);
 
-    @Query("select tran.balance "
+    @Query("select tran.finalBalance "
             + "from Transactions tran, Account act, Client c "
-            + "where tran.account.accountId = act.accountId "
+            + "where tran.account.id = act.id "
             + "and act.client.id = c.id "
             + "and c.id = ?1 "
-            + "and act.accountId = ?2 "
-            + "order by tran.transactionId desc"
+            + "and act.id = ?2 "
+            + "order by tran.id desc"
     )
     List<BigDecimal> getBalances(Integer clientId, Integer accountId);
 }

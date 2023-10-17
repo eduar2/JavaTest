@@ -5,6 +5,7 @@ import com.pichincha.prueba.model.dto.ClientDTO;
 import com.pichincha.prueba.repository.IClientRepository;
 import com.pichincha.prueba.service.interfaces.IClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Transactional
 public class ClientService implements IClientService {
 
+    @Autowired
     private IClientRepository repository;
     @Override
     public ClientDTO create(ClientDTO dto){

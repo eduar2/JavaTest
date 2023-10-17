@@ -1,0 +1,11 @@
+services:
+
+  app:
+    image: 'pichincha-test:latest'
+    ports:
+      - 8080:8080
+    volumes:
+      - app:/app
+
+volumes:
+  app:

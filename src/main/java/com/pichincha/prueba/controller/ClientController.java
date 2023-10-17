@@ -34,8 +34,8 @@ public class ClientController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping
-    ResponseEntity<GenericResponse> putClient(@RequestBody ClientDTO clientDTO){
+    @PutMapping("/{id}")
+    ResponseEntity<GenericResponse> putClient(@RequestBody ClientDTO clientDTO, @PathVariable("id") Integer id){
         GenericResponse response = new GenericResponse();
         try{
             clientService.update(clientDTO);

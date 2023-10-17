@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IAccountRepository extends CrudRepository<Account, Integer> {
 
-    @Query("select q "
+    @Query("select act "
             + "from Account act, Client c "
             + "where act.client.id = c.id "
             + "and c.id = ?1")
