@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "31ec4ccb-7f88-41e1-adf8-ce24851e3a57",
+		"name": "GlobantPichinchaJava",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "266960",
+		"_collection_link": "https://blue-desert-269591.postman.co/workspace/Azure~a612ec28-aa9d-4d99-bb61-7537f5974c5f/collection/266960-31ec4ccb-7f88-41e1-adf8-ce24851e3a57?action=share&source=collection_link&creator=266960"
+	},
+	"item": [
+		{
+			"name": "GetClientes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/clientes",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clientes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AllTransactions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/transacciones",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transacciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetReport",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/transacciones/reportes?initialDate=2023-10-17&finalDate=2023-10-17&clientId=1552",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transacciones",
+						"reportes"
+					],
+					"query": [
+						{
+							"key": "initialDate",
+							"value": "2023-10-17"
+						},
+						{
+							"key": "finalDate",
+							"value": "2023-10-17"
+						},
+						{
+							"key": "clientId",
+							"value": "1552"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAccounts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/cuentas?clientId=1552",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cuentas"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "1552"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteCliente",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/clientes/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clientes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAccount",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/cuentas/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cuentas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateClient",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientId\": 0,\r\n    \"name\": \"Juan Osorio\",\r\n    \"gender\": \"Masculino\",\r\n    \"age\": 47,\r\n    \"identification\": \"481\",\r\n    \"address\": \"13 de Junio y Equinoccial\",\r\n    \"phone\": \"09867418\",\r\n    \"password\": \"1234\",\r\n    \"status\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/clientes",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clientes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateCuenta",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n     \"accountId\": 0,\r\n     \"number\": \"001\",\r\n     \"type\": \"ahorros\",\r\n     \"initialBalance\": 1000,\r\n     \"currentBalance\": 1000,\r\n     \"status\": true,\r\n    \"clientDTO\": {\r\n        \"clientId\": 1552\r\n    }\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/cuentas",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateTransaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n     \"id\": 0,\r\n     \"type\": \"credito\",\r\n     \"amount\": 400,\r\n     \"status\": true,\r\n     \"accountDTO\":{\r\n        \"accountId\": 33\r\n    }\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/transacciones",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transacciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateClient",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientId\": 53,\r\n    \"name\": \"Juan Osorio Arias\",\r\n    \"gender\": \"Masculino\",\r\n    \"age\": 47,\r\n    \"identification\": \"481\",\r\n    \"address\": \"13 de Junio y Equinoccial\",\r\n    \"phone\": \"09867418\",\r\n    \"password\": \"1234\",\r\n    \"status\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/clientes/53",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clientes",
+						"53"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateCuenta",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n     \"accountId\": 1,\r\n     \"number\": \"001\",\r\n     \"type\": \"ahorros\",\r\n     \"initialBalance\": 1100,\r\n     \"currentBalance\": 700,\r\n     \"status\": true,\r\n    \"clientDTO\": {\r\n        \"clientId\": 1\r\n    }\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/cuentas",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cuentas"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
